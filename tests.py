@@ -1,5 +1,7 @@
 import webbrowser as web
 import os
+import SaveAndLoadCommands as sl
+
 try:
     import tkinter as tk
 except ModuleNotFoundError:
@@ -8,7 +10,7 @@ except ModuleNotFoundError:
 try:
     from pyaudio import *
 except ModuleNotFoundError:
-    os.system("pip install "+os.path.dirname(__file__)+"\PyAudio-0.2.11-cp310-cp310-win32.whl")
+    os.system("pip install " + os.path.dirname(__file__) + "\PyAudio-0.2.11-cp310-cp310-win32.whl")
     from pyaudio import *
 try:
     from speech_recognition import Recognizer, Microphone
@@ -18,12 +20,7 @@ except ModuleNotFoundError:
 
 joseph = tk.Tk()
 
-commands = {"Joseph ouvre google": ("https://www.google.com/", "ws"),
-            "Joseph ouvre YouTube": ("https://www.youtube.com/", "ws"),
-            "Joseph ouvre Wikipédia": ("https://fr.wikipedia.org/", "ws"),
-            ("Joseph cherche", "sur Google"): ("https://www.google.com/search?q=", "src"),
-            "Joseph ouvre chrome": ("chrome.exe", "app")
-            }
+commands = sl.load()
 
 
 def voiceReckon():
@@ -38,10 +35,10 @@ def voiceReckon():
     try:
         print("Reconnaissance du texte...")
         text = recognizer.recognize_google(
-                     recorded_audio,
-                     language="fr-FR"
-                     )
-        print("vous avez dit : {}". format(text))
+            recorded_audio,
+            language="fr-FR"
+        )
+        print("vous avez dit : {}".format(text))
 
     except Exception as ex:
         print(ex)

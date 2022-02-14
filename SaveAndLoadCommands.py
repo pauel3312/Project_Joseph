@@ -28,6 +28,3 @@ def load():
     s = f.read()
     f.close()
     return chtdct(s)
-
-
-print(load())
