@@ -60,6 +60,6 @@ def getCommands(txt):
                 os.system("START " + commands[key][0])
 
 
-bt_voc = tk.Button(joseph, text="Joseph", command=voiceReckon())
+bt_voc = tk.Button(joseph, text="Joseph", command=voiceReckon)
 bt_voc.grid(row=0, column=0)
 joseph.mainloop()
