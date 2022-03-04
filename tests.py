@@ -64,3 +64,4 @@ def getCommands(txt):
 bt_voc = tk.Button(joseph, text="Joseph", command=voiceReckon)
 bt_voc.grid(row=0, column=0)
 joseph.mainloop()
+
