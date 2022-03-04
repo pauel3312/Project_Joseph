@@ -31,6 +31,7 @@ def voiceReckon():
         recognizer.adjust_for_ambient_noise(source)
         print("vous pouvez parler...")
         recorded_audio = recognizer.listen(source)
+#        recorded_audio = recognizer.record(source, 3) permet de modifier la durée de l'enregistrement
         print("enregistrement terminé")
     try:
         print("Reconnaissance du texte...")
