@@ -18,13 +18,13 @@ def chtdct(ch):
 
 
 def save(dct):
-    f = open(os.path.dirname(__file__) + '\\commands.txt', 'w')
+    f = open(os.path.dirname(__file__) + '\\commands.txt', 'w', encoding='UTF-8')
     f.write(str(dct))
     f.close()
 
 
 def load():
-    f = open(os.path.dirname(__file__) + '\\commands.txt', 'r')
+    f = open(os.path.dirname(__file__) + '\\commands.txt', 'r', encoding='UTF-8')
     s = f.read()
     f.close()
     return chtdct(s)
