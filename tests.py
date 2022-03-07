@@ -19,27 +19,31 @@ except ModuleNotFoundError:
     from speech_recognition import Recognizer, Microphone
 
 joseph = tk.Tk()
-
 commands = sl.load()
-
+lb_status = tk.Label(joseph)
+lb_status.grid(row=1, column=0)
+def ctxt(text):
+    global lb_status
+    lb_status["text"] = text
 
 def voiceReckon():
+    global lb_status
     recognizer = Recognizer()
 
     with Microphone() as source:
-        print("réglage du bruit ambiant...patientez...")
+        ctxt("réglage du bruit ambiant...patientez...")
         recognizer.adjust_for_ambient_noise(source)
-        print("vous pouvez parler...")
+        ctxt("vous pouvez parler...")
         recorded_audio = recognizer.listen(source)
 #        recorded_audio = recognizer.record(source, 3) permet de modifier la durée de l'enregistrement
-        print("enregistrement terminé")
+        ctxt("enregistrement terminé")
     try:
-        print("Reconnaissance du texte...")
+        lb_status["text"] = "Reconnaissance du texte..."
         text = recognizer.recognize_google(
             recorded_audio,
             language="fr-FR"
         )
-        print("vous avez dit : {}".format(text))
+        lb_status["text"] = "vous avez dit : {}".format(text)
 
     except Exception as ex:
         print(ex)
