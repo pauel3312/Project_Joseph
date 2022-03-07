@@ -50,6 +50,7 @@ def voiceReckon():
     getCommands(text)
 
 
+
 def getCommands(txt):
     for key in commands.keys():
         if commands[key][1] == 'ws':
