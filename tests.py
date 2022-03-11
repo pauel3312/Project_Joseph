@@ -1,7 +1,6 @@
 import webbrowser as web
 import os
 import SaveAndLoadCommands as sl
-
 try:
     import tkinter as tk
 except ModuleNotFoundError:
@@ -17,38 +16,32 @@ try:
 except ModuleNotFoundError:
     os.system("pip install Speechrecognition")
     from speech_recognition import Recognizer, Microphone
+marge_x = 10
+marge_y = 10
 
-joseph = tk.Tk()
-commands = sl.load()
-lb_status = tk.Label(joseph)
-lb_status.grid(row=1, column=0)
-def ctxt(text):
-    global lb_status
-    lb_status["text"] = text
 
 def voiceReckon():
-    global lb_status
     recognizer = Recognizer()
-
+    global lb_status, joseph, lb_reponse
     with Microphone() as source:
-        ctxt("réglage du bruit ambiant...patientez...")
+        lb_status["text"] = "réglage du bruit ambiant...patientez..."
+        joseph.update()
         recognizer.adjust_for_ambient_noise(source)
-        ctxt("vous pouvez parler...")
+        lb_status["text"] = "vous pouvez parler..."
+        joseph.update()
         recorded_audio = recognizer.listen(source)
 #        recorded_audio = recognizer.record(source, 3) permet de modifier la durée de l'enregistrement
-        ctxt("enregistrement terminé")
+        lb_status["text"] = "enregistrement terminé"
+        joseph.update()
     try:
         lb_status["text"] = "Reconnaissance du texte..."
-        text = recognizer.recognize_google(
-            recorded_audio,
-            language="fr-FR"
-        )
-        lb_status["text"] = "vous avez dit : {}".format(text)
-
+        joseph.update()
+        text = recognizer.recognize_google(recorded_audio, language="fr-FR")
+        lb_reponse["text"] = text
+        joseph.update()
     except Exception as ex:
         print(ex)
     getCommands(text)
-
 
 
 def getCommands(txt):
@@ -66,7 +59,14 @@ def getCommands(txt):
                 os.system("START " + commands[key][0])
 
 
+joseph = tk.Tk()
+commands = sl.load()
+#bt_quit = tk.Button(joseph, text="X", command=joseph.destroy, fg="white", bg="red")
+#bt_quit.grid(column=100, row=0, padx=marge_x, pady=marge_y)
+lb_status = tk.Label(joseph, bg="gray", width=40)
+lb_status.grid(row=6, column=2, padx=marge_x, pady=marge_y)
+lb_reponse = tk.Label(joseph, bg="gray", width=50)
+lb_reponse.grid(row=7, column=0, padx=marge_x, pady=marge_y)
 bt_voc = tk.Button(joseph, text="Joseph", command=voiceReckon)
-bt_voc.grid(row=0, column=0)
+bt_voc.grid(row=5, column=0, padx=marge_x, pady=marge_y)
 joseph.mainloop()
-
