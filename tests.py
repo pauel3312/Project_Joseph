@@ -70,4 +70,3 @@ lb_reponse.grid(row=7, column=0, padx=marge_x, pady=marge_y)
 bt_voc = tk.Button(joseph, text="Joseph", command=voiceReckon)
 bt_voc.grid(row=5, column=0, padx=marge_x, pady=marge_y)
 joseph.mainloop()
-
