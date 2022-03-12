@@ -38,6 +38,7 @@ def voiceReckon():
         joseph.update()
         text = recognizer.recognize_google(recorded_audio, language="fr-FR")
         lb_reponse["text"] = text
+        lb_status["text"] = ""
         joseph.update()
     except Exception as ex:
         print(ex)
