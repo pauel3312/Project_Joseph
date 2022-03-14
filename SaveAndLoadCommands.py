@@ -15,7 +15,7 @@ def chtdct(ch):
         if i % 2 == 1:
             texts.append(texts_but_not_only[i])
     for i in range(len(texts)):
-        if texts[i] in ('ws', 'src', 'app'):
+        if texts[i] in ('ws', 'src', 'app', 'innerFct'):
             if texts[i] not in ('src'):
                 rt[texts[i - 2]] = (texts[i - 1], texts[i])
             else:

@@ -37,7 +37,10 @@ def voiceReckon():
         lb_status["text"] = "Reconnaissance du texte..."
         joseph.update()
         text = recognizer.recognize_google(recorded_audio, language="fr-FR")
-        lb_reponse["text"] = text
+        if len(text) <= 50:
+            lb_reponse["text"] = text
+        else:
+            lb_reponse["text"] = text[:int(len(text)/2)] + '\n' + text[int(len(text)/2):]
         lb_status["text"] = ""
         joseph.update()
     except Exception as ex:
@@ -46,6 +49,7 @@ def voiceReckon():
 
 
 def getCommands(txt):
+    global joseph
     for key in commands.keys():
         if commands[key][1] == 'ws':
             if key in txt:
@@ -58,16 +62,17 @@ def getCommands(txt):
         elif commands[key][1] == 'app':
             if key in txt:
                 os.system("START " + commands[key][0])
+        elif commands[key][1] == 'innerFct':
+            if commands[key][0] == 'Fermer':
+                joseph.destroy()
 
 
 joseph = tk.Tk()
 commands = sl.load()
-#bt_quit = tk.Button(joseph, text="X", command=joseph.destroy, fg="white", bg="red")
-#bt_quit.grid(column=100, row=0, padx=marge_x, pady=marge_y)
-lb_status = tk.Label(joseph, bg="gray", width=40)
+lb_status = tk.Label(joseph, bg="grey82", width=40)
 lb_status.grid(row=6, column=2, padx=marge_x, pady=marge_y)
-lb_reponse = tk.Label(joseph, bg="gray", width=50)
-lb_reponse.grid(row=7, column=0, padx=marge_x, pady=marge_y)
+lb_reponse = tk.Label(joseph, bg="grey82", width=50)
+lb_reponse.grid(row=7, column=0, padx=marge_x, pady=marge_y, rowspan=2)
 bt_voc = tk.Button(joseph, text="Joseph", command=voiceReckon)
 bt_voc.grid(row=5, column=0, padx=marge_x, pady=marge_y)
 joseph.mainloop()
