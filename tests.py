@@ -1,5 +1,6 @@
 import webbrowser as web
 import os
+from functools import  partial
 import SaveAndLoadCommands as sl
 try:
     import tkinter as tk
@@ -18,21 +19,23 @@ except ModuleNotFoundError:
     from speech_recognition import Recognizer, Microphone
 marge_x = 10
 marge_y = 10
+recognizer = Recognizer()
+recognizer.dynamic_energy_threshold = True
 
 
-def voiceReckon():
-    recognizer = Recognizer()
-    global lb_status, joseph, lb_reponse
-    with Microphone() as source:
-        lb_status["text"] = "réglage du bruit ambiant...patientez..."
-        joseph.update()
-        recognizer.adjust_for_ambient_noise(source)
-        lb_status["text"] = "vous pouvez parler..."
-        joseph.update()
-        recorded_audio = recognizer.listen(source)
-#        recorded_audio = recognizer.record(source, 3) permet de modifier la durée de l'enregistrement
-        lb_status["text"] = "enregistrement terminé"
-        joseph.update()
+
+def getAudio():
+    global lb_status, joseph, lb_reponse, recognizer, record_audio
+    lb_status["text"] = "vous pouvez parler..."
+    joseph.update()
+    record_audio(wait_for_stop=True)
+#         recorded_audio = recognizer.record(source, 3) permet de modifier la durée de l'enregistrement
+    lb_status["text"] = "enregistrement terminé"
+    joseph.update()
+
+
+def RecognizeAudio(recognizer, recorded_audio):
+    recorded_audio = None
     try:
         lb_status["text"] = "Reconnaissance du texte..."
         joseph.update()
@@ -67,12 +70,15 @@ def getCommands(txt):
                 joseph.destroy()
 
 
+with Microphone() as source:
+    recognizer.adjust_for_ambient_noise(source)
+record_audio = recognizer.listen_in_background(Microphone(), RecognizeAudio)
 joseph = tk.Tk()
 commands = sl.load()
 lb_status = tk.Label(joseph, bg="grey82", width=40)
 lb_status.grid(row=6, column=2, padx=marge_x, pady=marge_y)
 lb_reponse = tk.Label(joseph, bg="grey82", width=50)
 lb_reponse.grid(row=7, column=0, padx=marge_x, pady=marge_y, rowspan=2)
-bt_voc = tk.Button(joseph, text="Joseph", command=voiceReckon)
+bt_voc = tk.Button(joseph, text="Joseph", command=getAudio)
 bt_voc.grid(row=5, column=0, padx=marge_x, pady=marge_y)
 joseph.mainloop()
