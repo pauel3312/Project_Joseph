@@ -1,6 +1,9 @@
 import webbrowser as web
 import os
 from functools import  partial
+
+import pyaudio
+
 import SaveAndLoadCommands as sl
 try:
     import tkinter as tk
@@ -28,14 +31,14 @@ def getAudio():
     global lb_status, joseph, lb_reponse, recognizer, record_audio
     lb_status["text"] = "vous pouvez parler..."
     joseph.update()
-    record_audio(wait_for_stop=True)
+    record_audio()
 #         recorded_audio = recognizer.record(source, 3) permet de modifier la durée de l'enregistrement
     lb_status["text"] = "enregistrement terminé"
     joseph.update()
 
 
 def RecognizeAudio(recognizer, recorded_audio):
-    recorded_audio = None
+    print("IsRunning!")
     try:
         lb_status["text"] = "Reconnaissance du texte..."
         joseph.update()
@@ -68,10 +71,11 @@ def getCommands(txt):
         elif commands[key][1] == 'innerFct':
             if commands[key][0] == 'Fermer':
                 joseph.destroy()
+                exit(0)
 
 
-with Microphone() as source:
-    recognizer.adjust_for_ambient_noise(source)
+with Microphone() as microphone:
+    recognizer.adjust_for_ambient_noise(microphone)
 record_audio = recognizer.listen_in_background(Microphone(), RecognizeAudio)
 joseph = tk.Tk()
 commands = sl.load()
