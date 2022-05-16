@@ -104,3 +104,4 @@ commands = sl.load()
 
 GUI()
 Assistant_vocal.mainloop()
+
