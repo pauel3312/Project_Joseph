@@ -61,22 +61,13 @@ def voiceReckon():
 
 
 def getCommands(txt):
-    for key in commands.keys():
-        if commands[key][1] == 'ws':
-            if key in txt:
-                web.open(commands[key][0], new=0, autoraise=True)
-        elif commands[key][1] == 'src':
-            if key[0] in txt and key[1] in txt:
-                a = txt.split(key[0])
-                a = a[1].split(key[1])
-                web.open(commands[key][0] + a[0], new=0, autoraise=True)
-        elif commands[key][1] == 'app':
-            if key in txt:
-                os.system("START " + commands[key][0])
-        elif commands[key][1] == 'innerFct':
-            if key in txt:
-                if commands[key][0] == "Fermer":
-                    joseph.destroy()
+    for command in commands:
+        if type(command[0]) == list:
+            if command[2] == 'src':
+                if command[0][0] and command[0][1] in txt:
+                    a = txt.split(command[0][0])
+                    a = a[1].split(command[0][1])
+                    web.open(commands[0][1] + a[0], new=0, autoraise=True)
 
 
 def GUI():
@@ -88,8 +79,6 @@ def GUI():
     bt_voc.grid(row=5, column=0, padx=marge_x, pady=marge_y)
     lb_reponse.grid(row=7, column=0, padx=marge_x, pady=marge_y, rowspan=2)
     lb_status.grid(row=6, column=2, padx=marge_x, pady=marge_y)
-
-
 
 
 Assistant_vocal = tk.Tk()
@@ -104,4 +93,3 @@ commands = sl.load()
 
 GUI()
 Assistant_vocal.mainloop()
-
