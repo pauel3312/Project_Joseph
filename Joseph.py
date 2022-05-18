@@ -1,7 +1,6 @@
 import webbrowser as web
 import os
 import SaveAndLoadCommands as sl
-web.open('https://www.google.com/search?q=ta geule', new=1, autoraise=True)
 lb_reponse = None
 lb_status = None
 
@@ -67,7 +66,7 @@ def getCommands(txt):
                 if command[0][0] and command[0][1] in txt:
                     a = txt.split(command[0][0])
                     a = a[1].split(command[0][1])
-                    web.open(commands[1] + a[0], new=0, autoraise=True)
+                    web.open(command[1] + a[0], new=0, autoraise=True)
 
 
 def GUI():
