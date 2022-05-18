@@ -47,6 +47,9 @@ def voiceReckon():
             recorded_audio,
             language="fr-FR"
         )
+    except Exception as ex:
+        print(ex)
+    try:
         if len(text) <= 50:
             lb_reponse["text"] = text
         else:
@@ -54,9 +57,9 @@ def voiceReckon():
         lb_status["text"] = ""
         joseph.update()
 
-    except Exception as ex:
-        print(ex)
-    getCommands(text)
+        getCommands(text)
+    except UnboundLocalError:
+        lb_reponse["text"] = 'Vous n\'avez rien dit'
 
 
 def getCommands(txt):
