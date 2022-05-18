@@ -62,11 +62,16 @@ def voiceReckon():
 def getCommands(txt):
     for command in commands:
         if type(command[0]) == list:
-            if command[2] == 'src':
-                if command[0][0] and command[0][1] in txt:
+            if command[0][0] and command[0][1] in txt:
+                if command[2] == 'src':
                     a = txt.split(command[0][0])
                     a = a[1].split(command[0][1])
                     web.open(command[1] + a[0], new=0, autoraise=True)
+        elif type(command[0]) == str:
+            if command[0] in txt:
+                if command[2] == 'ws':
+                    web.open(command[1], new=0, autoraise=True)
+
 
 
 def GUI():
