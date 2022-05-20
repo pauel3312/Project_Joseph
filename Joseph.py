@@ -74,6 +74,8 @@ def getCommands(txt):
             if command[0] in txt:
                 if command[2] == 'ws':
                     web.open(command[1], new=0, autoraise=True)
+                elif command[2] == 'app':
+                    os.system('START ' + command[1])
 
 
 
