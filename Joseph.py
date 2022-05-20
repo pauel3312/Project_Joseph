@@ -76,7 +76,8 @@ def getCommands(txt):
                     web.open(command[1], new=0, autoraise=True)
                 elif command[2] == 'app':
                     os.system('START ' + command[1])
-
+                elif command[2] == 'InnerFct':
+                    eval(command[1])()
 
 
 def GUI():
