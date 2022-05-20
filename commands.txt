@@ -1,0 +1,1 @@
+{'Joseph ouvre google': ('https://www.google.com/', 'ws'), 'Joseph ouvre YouTube': ('https://www.youtube.com/', 'ws'), 'Joseph ouvre WikipÃ©dia': ('https://fr.wikipedia.org/', 'ws'), ('Joseph cherche', 'sur Google'): ('https://www.google.com/search?q=', 'src'), 'Joseph ouvre chrome': ('chrome.exe', 'app')}
