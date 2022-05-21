@@ -102,4 +102,5 @@ NoteBook.grid()
 commands = sl.load()
 
 GUI()
+Assistant_vocal.title("Assistant vocal")
 Assistant_vocal.mainloop()
