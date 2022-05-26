@@ -1,6 +1,8 @@
+# --coding: utf-8 --
 import webbrowser as web
 import os
-import SaveAndLoadCommands as sl
+import SaveAndLoadCommands as Sl
+from functools import partial
 lb_reponse = None
 lb_status = None
 
@@ -62,6 +64,36 @@ def voiceReckon():
         lb_reponse["text"] = 'Vous n\'avez rien dit'
 
 
+def rec_new_commands():
+    global commands, Creer_commandes, lb_newCommand_status, lb_newCommand_reponse
+    recognizer = Recognizer()
+    with Microphone() as source:
+        lb_newCommand_status["text"] = "réglage du bruit ambiant...patientez..."
+        Creer_commandes.update()
+        recognizer.adjust_for_ambient_noise(source)
+        lb_newCommand_status["text"] = "vous avez 3 secondes"
+        Creer_commandes.update()
+        recorded_audio = recognizer.record(source, 3)
+        lb_newCommand_status["text"] = "enregistrement terminé"
+        Creer_commandes.update()
+    try:
+        lb_newCommand_status["text"] = "Reconnaissance du texte..."
+        Creer_commandes.update()
+        text = recognizer.recognize_google(
+            recorded_audio,
+            language="fr-FR"
+        )
+    except Exception as ex:
+        print(ex)
+    try:
+        lb_newCommand_reponse["text"] = "vous avez dit : " + text
+        lb_newCommand_status["text"] = ""
+        Creer_commandes.update()
+    except UnboundLocalError:
+        lb_newCommand_reponse["text"] = 'Vous n\'avez rien dit'
+        lb_newCommand_status["text"] = ""
+        Creer_commandes.update()
+
 def getCommands(txt):
     for command in commands:
         if type(command[0]) == list:
@@ -81,14 +113,28 @@ def getCommands(txt):
 
 
 def GUI():
-    global joseph, marge_x, marge_y, lb_status, lb_reponse
+    global joseph, marge_x, marge_y, lb_status, lb_reponse, lb_newCommand_status, lb_newCommand_reponse, Creer_commandes, commands
     lb_status = tk.Label(joseph, bg="grey82", width=40)
     lb_reponse = tk.Label(joseph, bg="grey82", width=50)
     bt_voc = tk.Button(joseph, text="Joseph", command=voiceReckon)
+    lb_indic_rec = tk.Label(Creer_commandes, text="enregistrer les mots-clés :")
+    lb_indic_commande = tk.Label(Creer_commandes, text="Commande :")
+    lb_indic_type = tk.Label(Creer_commandes, text="Type de commande :")
+    lb_newCommand_status = tk.Label(Creer_commandes, text="", bg="grey82")
+    lb_newCommand_reponse = tk.Label(Creer_commandes, text="", bg="grey82")
+    bt_newCommand_rec = tk.Button(Creer_commandes, text="Nouvelle commande", command=rec_new_commands)
+    bt_save = tk.Button(Creer_commandes, text="Sauvegarder", command=partial(Sl.save, commands))
 
     bt_voc.grid(row=5, column=0, padx=marge_x, pady=marge_y)
     lb_reponse.grid(row=7, column=0, padx=marge_x, pady=marge_y, rowspan=2)
     lb_status.grid(row=6, column=2, padx=marge_x, pady=marge_y)
+    bt_save.grid(row=5, column=2, padx=marge_x, pady=marge_y)
+    lb_indic_rec.grid(row=0, column=0, padx=marge_x, pady=marge_y)
+    lb_indic_commande.grid(row=1, column=0, padx=marge_x, pady=marge_y)
+    lb_indic_type.grid(row=2, column=0, padx=marge_x, pady=marge_y)
+    bt_newCommand_rec.grid(row=0, column=1, padx=marge_x, pady=marge_y)
+    lb_newCommand_status.grid(row=1, column=2, padx=marge_x, pady=marge_y)
+    lb_newCommand_reponse.grid(row=2, column=2, padx=marge_x, pady=marge_y)
 
 
 Assistant_vocal = tk.Tk()
@@ -99,7 +145,7 @@ NoteBook.add(joseph, text="Commander à votre esclave")
 NoteBook.add(Creer_commandes, text="créer un ordre pour votre esclave")
 NoteBook.grid()
 
-commands = sl.load()
+commands = Sl.load()
 
 GUI()
 Assistant_vocal.title("Assistant vocal")
