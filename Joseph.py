@@ -94,6 +94,7 @@ def rec_new_commands():
         lb_newCommand_status["text"] = ""
         Creer_commandes.update()
 
+
 def getCommands(txt):
     for command in commands:
         if type(command[0]) == list:
@@ -122,7 +123,9 @@ def GUI():
     lb_indic_type = tk.Label(Creer_commandes, text="Type de commande :")
     lb_newCommand_status = tk.Label(Creer_commandes, text="", bg="grey82")
     lb_newCommand_reponse = tk.Label(Creer_commandes, text="", bg="grey82")
-    bt_newCommand_rec = tk.Button(Creer_commandes, text="Nouvelle commande", command=rec_new_commands)
+    bt_newCommand_rec = tk.Button(Creer_commandes, text="Enregistrer", command=rec_new_commands)
+    en_newCommand_commande = tk.Entry(Creer_commandes, width=30)
+    cb_newCommand_type = ttk.Combobox(Creer_commandes, values=["ws", "app", "src", "InnerFct"], state="readonly")
     bt_save = tk.Button(Creer_commandes, text="Sauvegarder", command=partial(Sl.save, commands))
 
     bt_voc.grid(row=5, column=0, padx=marge_x, pady=marge_y)
@@ -131,9 +134,11 @@ def GUI():
     bt_save.grid(row=5, column=2, padx=marge_x, pady=marge_y)
     lb_indic_rec.grid(row=0, column=0, padx=marge_x, pady=marge_y)
     lb_indic_commande.grid(row=1, column=0, padx=marge_x, pady=marge_y)
+    en_newCommand_commande.grid(row=1, column=1, padx=marge_x, pady=marge_y)
     lb_indic_type.grid(row=2, column=0, padx=marge_x, pady=marge_y)
     bt_newCommand_rec.grid(row=0, column=1, padx=marge_x, pady=marge_y)
     lb_newCommand_status.grid(row=1, column=2, padx=marge_x, pady=marge_y)
+    cb_newCommand_type.grid(row=2, column=1, padx=marge_x, pady=marge_y)
     lb_newCommand_reponse.grid(row=2, column=2, padx=marge_x, pady=marge_y)
 
 
