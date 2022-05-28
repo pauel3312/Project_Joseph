@@ -2,7 +2,6 @@
 import webbrowser as web
 import os
 import SaveAndLoadCommands as Sl
-from functools import partial
 lb_reponse = None
 lb_status = None
 
@@ -114,7 +113,8 @@ def getCommands(txt):
 
 
 def GUI():
-    global joseph, marge_x, marge_y, lb_status, lb_reponse, lb_newCommand_status, lb_newCommand_reponse, Creer_commandes, commands
+    global joseph, marge_x, marge_y, lb_status, lb_reponse, lb_newCommand_status, lb_newCommand_reponse, Creer_commandes\
+        , commands, en_newCommand_commande, cb_newCommand_type
     lb_status = tk.Label(joseph, bg="grey82", width=40)
     lb_reponse = tk.Label(joseph, bg="grey82", width=50)
     bt_voc = tk.Button(joseph, text="Joseph", command=voiceReckon)
@@ -125,8 +125,13 @@ def GUI():
     lb_newCommand_reponse = tk.Label(Creer_commandes, text="", bg="grey82")
     bt_newCommand_rec = tk.Button(Creer_commandes, text="Enregistrer", command=rec_new_commands)
     en_newCommand_commande = tk.Entry(Creer_commandes, width=30)
-    cb_newCommand_type = ttk.Combobox(Creer_commandes, values=["ws", "app", "src", "InnerFct"], state="readonly")
-    bt_save = tk.Button(Creer_commandes, text="Sauvegarder", command=partial(Sl.save, commands))
+    cb_newCommand_type = ttk.Combobox(Creer_commandes, values=["Site Web (ws)",
+                                                               "démarrer une application (app)",
+                                                               "rechercher dans un site (src)",
+                                                               "fonction interne au code (InnerFct)"],
+                                      state="readonly",
+                                      width=30)
+    bt_save = tk.Button(Creer_commandes, text="Sauvegarder", command=SaveCommands)
 
     bt_voc.grid(row=5, column=0, padx=marge_x, pady=marge_y)
     lb_reponse.grid(row=7, column=0, padx=marge_x, pady=marge_y, rowspan=2)
@@ -140,6 +145,19 @@ def GUI():
     lb_newCommand_status.grid(row=1, column=2, padx=marge_x, pady=marge_y)
     cb_newCommand_type.grid(row=2, column=1, padx=marge_x, pady=marge_y)
     lb_newCommand_reponse.grid(row=2, column=2, padx=marge_x, pady=marge_y)
+
+
+def SaveCommands():
+    global commands, en_newCommand_commande, cb_newCommand_type, lb_newCommand_reponse
+    if en_newCommand_commande.get() != '' and (cb_newCommand_type.get() != '' and lb_newCommand_reponse.cget("text") !=
+                                               'vous n\'avez rien dit'
+                                               and [lb_newCommand_reponse.cget("text").split(": ")[1],
+                                                    en_newCommand_commande.get(),
+                                                    cb_newCommand_type.get().split('(')[1].split(')')[0]] not in commands):
+        commands.append([lb_newCommand_reponse.cget("text").split(": ")[1], en_newCommand_commande.get(),
+                         cb_newCommand_type.get().split('(')[1].split(')')[0]])
+        Sl.save(commands)
+
 
 
 Assistant_vocal = tk.Tk()
