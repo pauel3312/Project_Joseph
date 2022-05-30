@@ -116,7 +116,15 @@ def getCommands(txt):
                 elif command[2] == 'InnerFct':
                     eval(command[1])()
                     break
-
+                elif command[2] == 'lst':
+                    for c in command[1]:
+                        if c[-4:] == '.exe':
+                            os.system('START ' + c)
+                            os.system("taskkill /im cmd.exe /f")
+                        else:
+                            web.open(c, new=0, autoraise=True)
+                            break
+                    break
 
 def GUI():
     global joseph, marge_x, marge_y, lb_status, lb_reponse, lb_newCommand_status, lb_newCommand_reponse, Creer_commandes\
@@ -133,7 +141,6 @@ def GUI():
     en_newCommand_commande = tk.Entry(Creer_commandes, width=30)
     cb_newCommand_type = ttk.Combobox(Creer_commandes, values=["Site Web (ws)",
                                                                "démarrer une application (app)",
-                                                               "rechercher dans un site (src)",
                                                                "fonction interne au code (InnerFct)"],
                                       state="readonly",
                                       width=30)
@@ -164,7 +171,11 @@ def display_commands():
     bt_actualiser.grid(row=0, column=4, padx=marge_x, pady=marge_y)
     for command in commands:
         lb_display_command_voc = tk.Label(afficher_commandes, text=command[0])
-        lb_display_command_link = tk.Label(afficher_commandes, text=command[1])
+        if command[2] != "lst":
+            lb_display_command_link = tk.Label(afficher_commandes, text=command[1])
+        else:
+            lb_display_command_link = ttk.Combobox(afficher_commandes, values=command[1], state="readonly", width=30)
+            lb_display_command_link.set(command[1][0])
         lb_display_command_type = tk.Label(afficher_commandes, text=command[2])
         bt_delete_command = tk.Button(afficher_commandes, text="Supprimer", command=partial(delete_commands, command))
         if bold:
@@ -174,7 +185,7 @@ def display_commands():
         lb_display_command_voc.grid(row=commands.index(command), column=0)
         lb_display_command_link.grid(row=commands.index(command), column=1)
         lb_display_command_type.grid(row=commands.index(command), column=2)
-        if not bold:
+        if not bold and command[2] != 'src':
             bt_delete_command.grid(row=commands.index(command), column=3)
         bold = False
 
