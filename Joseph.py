@@ -2,6 +2,7 @@
 import webbrowser as web
 import os
 import SaveAndLoadCommands as Sl
+from functools import partial
 lb_reponse = None
 lb_status = None
 
@@ -102,19 +103,24 @@ def getCommands(txt):
                     a = txt.split(command[0][0])
                     a = a[1].split(command[0][1])
                     web.open(command[1] + a[0], new=0, autoraise=True)
+                    break
         elif type(command[0]) == str:
             if command[0] in txt:
                 if command[2] == 'ws':
                     web.open(command[1], new=0, autoraise=True)
+                    break
                 elif command[2] == 'app':
                     os.system('START ' + command[1])
+                    os.system("taskkill /im cmd.exe /f")
+                    break
                 elif command[2] == 'InnerFct':
                     eval(command[1])()
+                    break
 
 
 def GUI():
     global joseph, marge_x, marge_y, lb_status, lb_reponse, lb_newCommand_status, lb_newCommand_reponse, Creer_commandes\
-        , commands, en_newCommand_commande, cb_newCommand_type
+        , commands, en_newCommand_commande, cb_newCommand_type, afficher_commandes
     lb_status = tk.Label(joseph, bg="grey82", width=40)
     lb_reponse = tk.Label(joseph, bg="grey82", width=50)
     bt_voc = tk.Button(joseph, text="Joseph", command=voiceReckon)
@@ -133,6 +139,9 @@ def GUI():
                                       width=30)
     bt_save = tk.Button(Creer_commandes, text="Sauvegarder", command=SaveCommands)
 
+
+    display_commands()
+
     bt_voc.grid(row=5, column=0, padx=marge_x, pady=marge_y)
     lb_reponse.grid(row=7, column=0, padx=marge_x, pady=marge_y, rowspan=2)
     lb_status.grid(row=6, column=2, padx=marge_x, pady=marge_y)
@@ -146,6 +155,29 @@ def GUI():
     cb_newCommand_type.grid(row=2, column=1, padx=marge_x, pady=marge_y)
     lb_newCommand_reponse.grid(row=2, column=2, padx=marge_x, pady=marge_y)
 
+def display_commands():
+    global commands, afficher_commandes
+    for widget in afficher_commandes.winfo_children():
+        widget.destroy()
+    bold = True
+    bt_actualiser = tk.Button(afficher_commandes, text="Actualiser", command=display_commands)
+    bt_actualiser.grid(row=0, column=4, padx=marge_x, pady=marge_y)
+    for command in commands:
+        lb_display_command_voc = tk.Label(afficher_commandes, text=command[0])
+        lb_display_command_link = tk.Label(afficher_commandes, text=command[1])
+        lb_display_command_type = tk.Label(afficher_commandes, text=command[2])
+        bt_delete_command = tk.Button(afficher_commandes, text="Supprimer", command=partial(delete_commands, command))
+        if bold:
+            lb_display_command_voc["font"] = ("Helvetica", "12", "bold")
+            lb_display_command_link["font"] = ("Helvetica", "12", "bold")
+            lb_display_command_type["font"] = ("Helvetica", "12", "bold")
+        lb_display_command_voc.grid(row=commands.index(command), column=0)
+        lb_display_command_link.grid(row=commands.index(command), column=1)
+        lb_display_command_type.grid(row=commands.index(command), column=2)
+        if not bold:
+            bt_delete_command.grid(row=commands.index(command), column=3)
+        bold = False
+
 
 def SaveCommands():
     global commands, en_newCommand_commande, cb_newCommand_type, lb_newCommand_reponse
@@ -157,15 +189,26 @@ def SaveCommands():
         commands.append([lb_newCommand_reponse.cget("text").split(": ")[1], en_newCommand_commande.get(),
                          cb_newCommand_type.get().split('(')[1].split(')')[0]])
         Sl.save(commands)
+        lb_newCommand_reponse.config(text="commande enregistrée")
+        en_newCommand_commande.delete(0, 'end')
+        cb_newCommand_type.set('')
 
+
+def delete_commands(command):
+    global commands
+    commands.remove(command)
+    Sl.save(commands)
+    display_commands()
 
 
 Assistant_vocal = tk.Tk()
 NoteBook = ttk.Notebook(Assistant_vocal)
 joseph = ttk.Frame(NoteBook, width=400, height=280)
 Creer_commandes = ttk.Frame(NoteBook, width=400, height=280)
+afficher_commandes = ttk.Frame(NoteBook, width=400, height=280)
 NoteBook.add(joseph, text="Commander à votre esclave")
 NoteBook.add(Creer_commandes, text="créer un ordre pour votre esclave")
+NoteBook.add(afficher_commandes, text="afficher les ordres de votre esclave")
 NoteBook.grid()
 
 commands = Sl.load()
