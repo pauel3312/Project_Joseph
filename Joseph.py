@@ -3,6 +3,7 @@ import webbrowser as web
 import os
 import SaveAndLoadCommands as Sl
 from functools import partial
+from time import sleep
 lb_reponse = None
 lb_status = None
 
@@ -116,6 +117,10 @@ def getCommands(txt):
                 elif command[2] == 'InnerFct':
                     eval(command[1])()
                     break
+                elif command[2] == 'cmd':
+                    os.system(command[1])
+                    os.system("taskkill /im cmd.exe /f")
+                    break
                 elif command[2] == 'lst':
                     for c in command[1]:
                         if c[-4:] == '.exe':
@@ -137,11 +142,13 @@ def GUI():
     lb_indic_type = tk.Label(Creer_commandes, text="Type de commande :")
     lb_newCommand_status = tk.Label(Creer_commandes, text="", bg="grey82")
     lb_newCommand_reponse = tk.Label(Creer_commandes, text="", bg="grey82")
+#    bt_newcommand_plus = tk.Button(Creer_commandes, text="+", command=addEntry)
     bt_newCommand_rec = tk.Button(Creer_commandes, text="Enregistrer", command=rec_new_commands)
     en_newCommand_commande = tk.Entry(Creer_commandes, width=30)
     cb_newCommand_type = ttk.Combobox(Creer_commandes, values=["Site Web (ws)",
                                                                "démarrer une application (app)",
-                                                               "fonction interne au code (InnerFct)"],
+                                                               "fonction interne au code (InnerFct)",
+                                                               "commande MS-DOS (cmd)"],
                                       state="readonly",
                                       width=30)
     bt_save = tk.Button(Creer_commandes, text="Sauvegarder", command=SaveCommands)
@@ -155,12 +162,13 @@ def GUI():
     bt_save.grid(row=5, column=2, padx=marge_x, pady=marge_y)
     lb_indic_rec.grid(row=0, column=0, padx=marge_x, pady=marge_y)
     lb_indic_commande.grid(row=1, column=0, padx=marge_x, pady=marge_y)
-    en_newCommand_commande.grid(row=1, column=1, padx=marge_x, pady=marge_y)
+    en_newCommand_commande.grid(row=1, column=2, padx=marge_x, pady=marge_y)
     lb_indic_type.grid(row=2, column=0, padx=marge_x, pady=marge_y)
-    bt_newCommand_rec.grid(row=0, column=1, padx=marge_x, pady=marge_y)
-    lb_newCommand_status.grid(row=1, column=2, padx=marge_x, pady=marge_y)
-    cb_newCommand_type.grid(row=2, column=1, padx=marge_x, pady=marge_y)
-    lb_newCommand_reponse.grid(row=2, column=2, padx=marge_x, pady=marge_y)
+    bt_newCommand_rec.grid(row=0, column=2, padx=marge_x, pady=marge_y)
+    lb_newCommand_status.grid(row=1, column=3, padx=marge_x, pady=marge_y)
+    cb_newCommand_type.grid(row=2, column=2, padx=marge_x, pady=marge_y)
+    lb_newCommand_reponse.grid(row=2, column=3, padx=marge_x, pady=marge_y)
+
 
 def display_commands():
     global commands, afficher_commandes
@@ -192,8 +200,7 @@ def display_commands():
 
 def SaveCommands():
     global commands, en_newCommand_commande, cb_newCommand_type, lb_newCommand_reponse
-    if en_newCommand_commande.get() != '' and (cb_newCommand_type.get() != '' and lb_newCommand_reponse.cget("text") !=
-                                               'vous n\'avez rien dit'
+    if en_newCommand_commande.get() != '' and (cb_newCommand_type.get() != '' and "vous avez dit :" in lb_newCommand_reponse.cget("text")
                                                and [lb_newCommand_reponse.cget("text").split(": ")[1],
                                                     en_newCommand_commande.get(),
                                                     cb_newCommand_type.get().split('(')[1].split(')')[0]] not in commands):
@@ -203,6 +210,14 @@ def SaveCommands():
         lb_newCommand_reponse.config(text="commande enregistrée")
         en_newCommand_commande.delete(0, 'end')
         cb_newCommand_type.set('')
+        Creer_commandes.update()
+        sleep(1)
+        lb_newCommand_reponse["text"] = ""
+    else:
+        lb_newCommand_reponse["text"] = "il manque quelque chose"
+        Creer_commandes.update()
+        sleep(1)
+        lb_newCommand_reponse["text"] = ""
 
 
 def delete_commands(command):
