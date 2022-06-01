@@ -136,8 +136,8 @@ def getCommands(txt):
                     break
 
 def GUI():
-    global joseph, marge_x, marge_y, lb_status, lb_reponse, lb_newCommand_status, lb_newCommand_reponse, Creer_commandes\
-        , commands, en_newCommand_commande, cb_newCommand_type, afficher_commandes
+    global joseph, marge_x, marge_y, lb_status, lb_reponse, lb_newCommand_status, lb_newCommand_reponse,\
+        Creer_commandes, commands, en_newCommand_commande, cb_newCommand_type, afficher_commandes
     lb_status = tk.Label(joseph, bg="grey82", width=40)
     lb_reponse = tk.Label(joseph, bg="grey82", width=50)
     bt_voc = tk.Button(joseph, text="Joseph", command=voiceReckon)
