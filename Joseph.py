@@ -110,6 +110,10 @@ def getCommands(txt):
                 if command[2] == 'ws':
                     web.open(command[1], new=0, autoraise=True)
                     break
+                elif command[2] == 'file':
+                    os.startfile(command[1])
+                    os.system("taskkill /im cmd.exe /f")
+                    break
                 elif command[2] == 'app':
                     os.system('START ' + command[1])
                     os.system("taskkill /im cmd.exe /f")
@@ -148,7 +152,8 @@ def GUI():
     cb_newCommand_type = ttk.Combobox(Creer_commandes, values=["Site Web (ws)",
                                                                "démarrer une application (app)",
                                                                "fonction interne au code (InnerFct)",
-                                                               "commande MS-DOS (cmd)"],
+                                                               "commande MS-DOS (cmd)"
+                                                               "fichier avec chemin d'accès (file)"],
                                       state="readonly",
                                       width=30)
     bt_save = tk.Button(Creer_commandes, text="Sauvegarder", command=SaveCommands)
