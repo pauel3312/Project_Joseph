@@ -1,4 +1,5 @@
 # --coding: utf-8 --
+############################# import des librairies ###############################
 import webbrowser as web
 import os
 import SaveAndLoadCommands as Sl
@@ -6,6 +7,8 @@ from functools import partial
 from time import sleep
 NInputFields = 1
 list_InputWidgets = []
+
+############################# vérification de la présence des librairies sur la machine ###############################
 
 try:
     import tkinter as tk
@@ -28,6 +31,7 @@ marge_x = 10
 marge_y = 10
 recognizer = Recognizer()
 
+############################# fonction principale d'enregistrement ###############################
 
 def voiceReckon():
     global joseph, lb_status, lb_reponse
@@ -38,8 +42,7 @@ def voiceReckon():
         recognizer.adjust_for_ambient_noise(source)
         lb_status["text"] = "vous pouvez parler..."
         joseph.update()
-        recorded_audio = recognizer.listen(source)
-#        recorded_audio = recognizer.record(source, 3) permet de modifier la durée de l'enregistrement
+        recorded_audio = recognizer.record(source,)
         lb_status["text"] = "enregistrement terminé"
         joseph.update()
     try:
@@ -63,6 +66,7 @@ def voiceReckon():
     except UnboundLocalError:
         lb_reponse["text"] = 'Vous n\'avez rien dit'
 
+############################# fonction d'enregistrement d'une nouvelle comande ###############################
 
 def rec_new_commands():
     global commands, Creer_commandes, lb_newCommand_status, lb_newCommand_reponse
@@ -94,6 +98,7 @@ def rec_new_commands():
         lb_newCommand_status["text"] = ""
         Creer_commandes.update()
 
+############################# fonction d'exécution de la commande ###############################
 
 def getCommands(txt):
     for command in commands:
@@ -133,6 +138,8 @@ def getCommands(txt):
                             web.open(c, new=0, autoraise=True)
                             break
                     break
+                
+############################# fonction GUI ###############################
 
 def GUI():
     global joseph, marge_x, marge_y, lb_status, lb_reponse, lb_newCommand_status, lb_newCommand_reponse,\
@@ -150,6 +157,7 @@ def GUI():
     lb_reponse.grid(row=7, column=0, padx=marge_x, pady=marge_y, rowspan=2)
     lb_status.grid(row=6, column=2, padx=marge_x, pady=marge_y)
 
+############################# fonction ajout de commandes ###############################
 
 def updateInputWidgets():
     global list_InputWidgets, lb_newCommand_status, lb_newCommand_reponse, Creer_commandes
@@ -193,6 +201,7 @@ def UpdateEntries(N):
         NInputFields += N
         updateInputWidgets()
 
+############################# fonction affichage des commandes ###############################
 
 def display_commands():
     global commands, afficher_commandes
@@ -221,6 +230,7 @@ def display_commands():
             bt_delete_command.grid(row=commands.index(command), column=3)
         bold = False
 
+############################# fonction enregistrement des commandes ###############################
 
 def SaveCommands():
     global commands,  lb_newCommand_reponse, list_InputWidgets, lb_NewCommand_status
@@ -279,15 +289,18 @@ def delete_commands(command):
     Sl.save(commands)
     display_commands()
 
+############################# MAIN (appel des fonctions) ###############################
 
 Assistant_vocal = tk.Tk()
+
 NoteBook = ttk.Notebook(Assistant_vocal)
 joseph = ttk.Frame(NoteBook, width=400, height=280)
 Creer_commandes = ttk.Frame(NoteBook, width=400, height=280)
 afficher_commandes = ttk.Frame(NoteBook, width=400, height=280)
-NoteBook.add(joseph, text="Commander à votre esclave")
-NoteBook.add(Creer_commandes, text="créer un ordre pour votre esclave")
-NoteBook.add(afficher_commandes, text="afficher les ordres de votre esclave")
+
+NoteBook.add(joseph, text="exécuter une commande")
+NoteBook.add(Creer_commandes, text="créer une nouvelle commande")
+NoteBook.add(afficher_commandes, text="gérer la liste des commandes")
 NoteBook.grid()
 
 commands = Sl.load()
@@ -295,3 +308,6 @@ commands = Sl.load()
 GUI()
 Assistant_vocal.title("Assistant vocal")
 Assistant_vocal.mainloop()
+
+
+############################# FIN ###############################
