@@ -4,6 +4,7 @@ import os
 import SaveAndLoadCommands as Sl
 from functools import partial
 from time import sleep
+
 NInputFields = 1
 list_InputWidgets = []
 
@@ -39,7 +40,7 @@ def voiceReckon():
         lb_status["text"] = "vous pouvez parler..."
         joseph.update()
         recorded_audio = recognizer.listen(source)
-#        recorded_audio = recognizer.record(source, 3) permet de modifier la durée de l'enregistrement
+        #        recorded_audio = recognizer.record(source, 3) permet de modifier la durée de l'enregistrement
         lb_status["text"] = "enregistrement terminé"
         joseph.update()
     try:
@@ -55,7 +56,7 @@ def voiceReckon():
         if len(text) <= 50:
             lb_reponse["text"] = text
         else:
-            lb_reponse["text"] = text[:int(len(text)/2)] + '\n' + text[int(len(text)/2):]
+            lb_reponse["text"] = text[:int(len(text) / 2)] + '\n' + text[int(len(text) / 2):]
         lb_status["text"] = ""
         joseph.update()
 
@@ -126,23 +127,24 @@ def getCommands(txt):
                     break
                 elif command[2] == 'lst':
                     for c in command[1]:
-                        if c[-4:] == '.exe':
-                            os.system('START ' + c)
-                            os.system("taskkill /im cmd.exe /f")
-                        else:
-                            web.open(c, new=0, autoraise=True)
-                            break
+                        if c[1] == 'cmd':
+                            os.system(c[0])
+                        elif c[1] == 'file':
+                            os.startfile(c[0])
+                        elif c[1] == 'ws':
+                            web.open(c[0], new=0, autoraise=True)
+                        elif c[1] == 'app':
+                            os.system('START ' + c[0])
                     break
 
+
 def GUI():
-    global joseph, marge_x, marge_y, lb_status, lb_reponse, lb_newCommand_status, lb_newCommand_reponse,\
+    global joseph, marge_x, marge_y, lb_status, lb_reponse, lb_newCommand_status, lb_newCommand_reponse, \
         Creer_commandes, commands, afficher_commandes
     lb_status = tk.Label(joseph, bg="grey82", width=40)
     lb_reponse = tk.Label(joseph, bg="grey82", width=50)
     bt_voc = tk.Button(joseph, text="Joseph", command=voiceReckon)
     updateInputWidgets()
-
-
 
     display_commands()
 
@@ -155,36 +157,45 @@ def updateInputWidgets():
     global list_InputWidgets, lb_newCommand_status, lb_newCommand_reponse, Creer_commandes
     for widget in Creer_commandes.winfo_children():
         widget.destroy()
+    list_InputWidgets = []
     bt_save = tk.Button(Creer_commandes, text="Sauvegarder", command=SaveCommands)
     lb_indic_rec = tk.Label(Creer_commandes, text="enregistrer les mots-clés :")
-    bt_newcommand_plus = tk.Button(Creer_commandes, text="+", command=partial(UpdateEntries,1))
-    bt_newcommand_moins = tk.Button(Creer_commandes, text="-", command=partial(UpdateEntries,-1))
+    bt_newcommand_plus = tk.Button(Creer_commandes, text="+", command=partial(UpdateEntries, 1))
+    bt_newcommand_moins = tk.Button(Creer_commandes, text="-", command=partial(UpdateEntries, -1))
     bt_newCommand_rec = tk.Button(Creer_commandes, text="Enregistrer", command=rec_new_commands)
     lb_newCommand_status = tk.Label(Creer_commandes, text="", bg="grey82")
     lb_newCommand_reponse = tk.Label(Creer_commandes, text="", bg="grey82")
     lb_newCommand_status.grid(row=1, column=3, padx=marge_x, pady=marge_y)
     lb_newCommand_reponse.grid(row=2, column=3, padx=marge_x, pady=marge_y)
-    bt_newcommand_plus.grid(row=2+2*NInputFields, column=1, padx=marge_x, pady=marge_y)
+    bt_newcommand_plus.grid(row=2 + 2 * NInputFields, column=1, padx=marge_x, pady=marge_y)
     bt_newcommand_moins.grid(row=1, column=1, padx=marge_x, pady=marge_y)
     bt_newCommand_rec.grid(row=0, column=2, padx=marge_x, pady=marge_y)
     lb_indic_rec.grid(row=0, column=0, padx=marge_x, pady=marge_y)
-    bt_save.grid(row=5+2*NInputFields, column=2, padx=marge_x, pady=marge_y)
+    bt_save.grid(row=5 + 2 * NInputFields, column=2, padx=marge_x, pady=marge_y)
     for i in range(NInputFields):
-        lb_indic_commande = tk.Label(Creer_commandes, text="Commande {} :".format(i+1))
-        lb_indic_type = tk.Label(Creer_commandes, text="Type de la commande {} :".format(i+1))
+        lb_indic_commande = tk.Label(Creer_commandes, text="Commande {} :".format(i + 1))
+        lb_indic_type = tk.Label(Creer_commandes, text="Type de la commande {} :".format(i + 1))
         en_newCommand_commande = tk.Entry(Creer_commandes, width=30)
-        cb_newCommand_type = ttk.Combobox(Creer_commandes, values=["Site Web (ws)",
-                                                               "démarrer une application (app)",
-                                                               "fonction interne au code (InnerFct)",
-                                                               "commande MS-DOS (cmd)",
-                                                               "fichier avec chemin d'accès (file)"],
-                                      state="readonly",
-                                      width=30)
-        list_InputWidgets.append((en_newCommand_commande, cb_newCommand_type))
-        en_newCommand_commande.grid(row=1+2*i, column=2, padx=marge_x, pady=marge_y)
-        cb_newCommand_type.grid(row=2+2*i, column=2, padx=marge_x, pady=marge_y)
-        lb_indic_commande.grid(row=1+2*i, column=0, padx=marge_x, pady=marge_y)
-        lb_indic_type.grid(row=2+2*i, column=0, padx=marge_x, pady=marge_y)
+        if NInputFields == 1:
+            cb_newCommand_type = ttk.Combobox(Creer_commandes, values=["Site Web (ws)",
+                                                                       "démarrer une application (app)",
+                                                                       "fonction interne au code (InnerFct)",
+                                                                       "commande MS-DOS (cmd)",
+                                                                       "fichier avec chemin d'accès (file)"],
+                                              state="readonly",
+                                              width=30)
+        else:
+            cb_newCommand_type = ttk.Combobox(Creer_commandes, values=["Site Web (ws)",
+                                                                       "démarrer une application (app)",
+                                                                       "commande MS-DOS (cmd)",
+                                                                       "fichier avec chemin d'accès (file)"],
+                                              state="readonly",
+                                              width=30)
+        list_InputWidgets.append([en_newCommand_commande, cb_newCommand_type])
+        en_newCommand_commande.grid(row=1 + 2 * i, column=2, padx=marge_x, pady=marge_y)
+        cb_newCommand_type.grid(row=2 + 2 * i, column=2, padx=marge_x, pady=marge_y)
+        lb_indic_commande.grid(row=1 + 2 * i, column=0, padx=marge_x, pady=marge_y)
+        lb_indic_type.grid(row=2 + 2 * i, column=0, padx=marge_x, pady=marge_y)
 
 
 def UpdateEntries(N):
@@ -223,14 +234,16 @@ def display_commands():
 
 
 def SaveCommands():
-    global commands,  lb_newCommand_reponse, list_InputWidgets, lb_NewCommand_status
+    global commands, lb_newCommand_reponse, list_InputWidgets, lb_NewCommand_status
     if len(list_InputWidgets) == 1:
         en_newCommand_commande = list_InputWidgets[0][0]
         cb_newCommand_type = list_InputWidgets[0][1]
-        if en_newCommand_commande.get() != '' and (cb_newCommand_type.get() != '' and "vous avez dit :" in lb_newCommand_reponse.cget("text")
+        if en_newCommand_commande.get() != '' and (cb_newCommand_type.get() != '' and
+                                                   "vous avez dit :" in lb_newCommand_reponse.cget("text")
                                                    and [lb_newCommand_reponse.cget("text").split(": ")[1],
                                                         en_newCommand_commande.get(),
-                                                        cb_newCommand_type.get().split('(')[1].split(')')[0]] not in commands):
+                                                        cb_newCommand_type.get().split('(')[1].split(')')[0]]
+                                                   not in commands):
             commands.append([lb_newCommand_reponse.cget("text").split(": ")[1], en_newCommand_commande.get(),
                              cb_newCommand_type.get().split('(')[1].split(')')[0]])
             Sl.save(commands)
@@ -248,14 +261,14 @@ def SaveCommands():
     else:
         add = True
         ListOfCommands = []
-        for i in range(len(list_InputWidgets)):
-            en_newCommand_commande = list_InputWidgets[i][0]
-            cb_newCommand_type = list_InputWidgets[i][1]
-            if en_newCommand_commande.get() != '' and (cb_newCommand_type.get() != '' and "vous avez dit :" in lb_newCommand_reponse.cget("text")
-                                                       and [lb_newCommand_reponse.cget("text").split(": ")[1],
-                                                            en_newCommand_commande.get(),
-                                                            cb_newCommand_type.get().split('(')[1].split(')')[0]] not in commands):
-                ListOfCommands.append(en_newCommand_commande.get())
+        for InputWidgets in list_InputWidgets:
+            en_newCommand_commande = InputWidgets[0]
+            cb_newCommand_type = InputWidgets[1]
+            if InputWidgets[0].get() != '' \
+                    and cb_newCommand_type.get() != '' \
+                    and "vous avez dit :" in lb_newCommand_reponse.cget("text"):
+                ListOfCommands.append((en_newCommand_commande.get(),
+                                       cb_newCommand_type.get().split('(')[1].split(')')[0]))
             else:
                 lb_newCommand_reponse["text"] = "il manque quelque chose"
                 Creer_commandes.update()
@@ -266,8 +279,9 @@ def SaveCommands():
             commands.append([lb_newCommand_reponse.cget("text").split(": ")[1], ListOfCommands, "lst"])
             Sl.save(commands)
             lb_newCommand_reponse.config(text="commande enregistrée")
-            en_newCommand_commande.delete(0, 'end')
-            cb_newCommand_type.set('')
+            for InputWidgets in list_InputWidgets:
+                InputWidgets[0].delete(0, 'end')
+                InputWidgets[1].set('')
             Creer_commandes.update()
             sleep(1)
             lb_newCommand_reponse["text"] = ""
