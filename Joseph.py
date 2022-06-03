@@ -1,5 +1,5 @@
 # --coding: utf-8 --
-############################# import des librairies ###############################
+# --------------------------------------------------- import des librairies -------------------------------------------
 import webbrowser as web
 import os
 import SaveAndLoadCommands as Sl
@@ -9,7 +9,7 @@ from time import sleep
 NInputFields = 1
 list_InputWidgets = []
 
-############################# vérification de la présence des librairies sur la machine ###############################
+# ----------------------------- vérification de la présence des librairies sur la machine ------------------------------
 
 try:
     import tkinter as tk
@@ -32,7 +32,8 @@ marge_x = 10
 marge_y = 10
 recognizer = Recognizer()
 
-############################# fonction principale d'enregistrement ###############################
+
+#-------------------------------------------- fonction principale d'enregistrement -------------------------------------
 
 def voiceReckon():
     global joseph, lb_status, lb_reponse
@@ -67,7 +68,8 @@ def voiceReckon():
     except UnboundLocalError:
         lb_reponse["text"] = 'Vous n\'avez rien dit'
 
-############################# fonction d'enregistrement d'une nouvelle comande ###############################
+
+# --------------------------- fonction d'enregistrement d'une nouvelle comande -----------------------------------------
 
 def rec_new_commands():
     global commands, Creer_commandes, lb_newCommand_status, lb_newCommand_reponse
@@ -99,7 +101,8 @@ def rec_new_commands():
         lb_newCommand_status["text"] = ""
         Creer_commandes.update()
 
-############################# fonction d'exécution de la commande ###############################
+
+# --------------------------- fonction d'exécution de la commande ------------------------------------------------------
 
 def getCommands(txt):
     for command in commands:
@@ -142,7 +145,8 @@ def getCommands(txt):
                             os.system('START ' + c[0])
                     break
 
-############################# fonction GUI ###############################
+
+# --------------------------- fonction GUI -----------------------------------------------------------------------------
 
 def GUI():
     global joseph, marge_x, marge_y, lb_status, lb_reponse, lb_newCommand_status, lb_newCommand_reponse, \
@@ -158,7 +162,8 @@ def GUI():
     lb_reponse.grid(row=7, column=0, padx=marge_x, pady=marge_y, rowspan=2)
     lb_status.grid(row=6, column=2, padx=marge_x, pady=marge_y)
 
-############################# fonction ajout de commandes ###############################
+
+# --------------------------- fonction ajout de commandes --------------------------------------------------------------
 
 def updateInputWidgets():
     global list_InputWidgets, lb_newCommand_status, lb_newCommand_reponse, Creer_commandes
@@ -211,7 +216,8 @@ def UpdateEntries(N):
         NInputFields += N
         updateInputWidgets()
 
-############################# fonction affichage des commandes ###############################
+
+# --------------------------- fonction affichage des commandes ---------------------------------------------------------
 
 def display_commands():
     global commands, afficher_commandes
@@ -240,7 +246,8 @@ def display_commands():
             bt_delete_command.grid(row=commands.index(command), column=3)
         bold = False
 
-############################# fonction enregistrement des commandes ###############################
+
+# --------------------------- fonction enregistrement des commandes ----------------------------------------------------
 
 def SaveCommands():
     global commands, lb_newCommand_reponse, list_InputWidgets, lb_NewCommand_status
@@ -302,7 +309,8 @@ def delete_commands(command):
     Sl.save(commands)
     display_commands()
 
-############################# MAIN (appel des fonctions) ###############################
+
+# --------------------------- MAIN (appel des fonctions) ---------------------------------------------------------------
 
 Assistant_vocal = tk.Tk()
 
@@ -322,5 +330,4 @@ GUI()
 Assistant_vocal.title("Assistant vocal")
 Assistant_vocal.mainloop()
 
-
-############################# FIN ###############################
+# --------------------------- FIN --------------------------------------------------------------------------------------
