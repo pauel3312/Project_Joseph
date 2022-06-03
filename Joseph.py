@@ -42,7 +42,7 @@ def voiceReckon():
         recognizer.adjust_for_ambient_noise(source)
         lb_status["text"] = "vous pouvez parler..."
         joseph.update()
-        recorded_audio = recognizer.record(source,)
+        recorded_audio = recognizer.listen(source)
         lb_status["text"] = "enregistrement terminé"
         joseph.update()
     try:
