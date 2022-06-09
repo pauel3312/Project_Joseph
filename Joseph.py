@@ -1,10 +1,12 @@
 # --coding: utf-8 --
 # --------------------------------------------------- import des librairies -------------------------------------------
+import subprocess
 import webbrowser as web
 import os
 import SaveAndLoadCommands as Sl
 from functools import partial
 from time import sleep
+from subprocess import check_output
 
 NInputFields = 1
 list_InputWidgets = []
@@ -230,6 +232,8 @@ def display_commands():
         lb_display_command_voc = tk.Label(afficher_commandes, text=command[0])
         if command[2] != "lst":
             lb_display_command_link = tk.Label(afficher_commandes, text=command[1])
+        elif command[2] == "file":
+            lb_display_command_link = tk.Label(afficher_commandes, text=str(command[1].split('\\')[-1]))
         else:
             lb_display_command_link = ttk.Combobox(afficher_commandes, values=command[1], state="readonly", width=30)
             lb_display_command_link.set(command[1][0])
@@ -247,6 +251,16 @@ def display_commands():
         bold = False
 
 
+# --------------------------- fonction récupération d'un raccourci à partir d'un mot-clé -------------------------------
+
+
+def get_shortcut(keyword):
+    for i in subprocess.check_output('dir C:"\ProgramData\Microsoft\Windows\Start Menu\Programs" /s /b', shell=True,
+                                     universal_newlines=True).split("\n"):
+        if keyword.casefold() in i.casefold():
+            return i
+    return None
+
 # --------------------------- fonction enregistrement des commandes ----------------------------------------------------
 
 def SaveCommands():
@@ -260,8 +274,12 @@ def SaveCommands():
                                                         en_newCommand_commande.get(),
                                                         cb_newCommand_type.get().split('(')[1].split(')')[0]]
                                                    not in commands):
-            commands.append([lb_newCommand_reponse.cget("text").split(": ")[1], en_newCommand_commande.get(),
-                             cb_newCommand_type.get().split('(')[1].split(')')[0]])
+            if "." in en_newCommand_commande.get():
+                commands.append([lb_newCommand_reponse.cget("text").split(": ")[1], en_newCommand_commande.get(),
+                                 cb_newCommand_type.get().split('(')[1].split(')')[0]])
+            else:
+                commands.append([lb_newCommand_reponse.cget("text").split(": ")[1], get_shortcut(en_newCommand_commande.get()),
+                                 "file"])
             Sl.save(commands)
             lb_newCommand_reponse.config(text="commande enregistrée")
             en_newCommand_commande.delete(0, 'end')
