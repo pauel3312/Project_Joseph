@@ -301,8 +301,11 @@ def SaveCommands():
             if InputWidgets[0].get() != '' \
                     and cb_newCommand_type.get() != '' \
                     and "vous avez dit :" in lb_newCommand_reponse.cget("text"):
-                ListOfCommands.append((en_newCommand_commande.get(),
-                                       cb_newCommand_type.get().split('(')[1].split(')')[0]))
+                if "." in en_newCommand_commande.get():
+                    ListOfCommands.append((en_newCommand_commande.get(),
+                                        cb_newCommand_type.get().split('(')[1].split(')')[0]))
+                else:
+                    ListOfCommands.append((get_shortcut(en_newCommand_commande.get()), "file"))
             else:
                 lb_newCommand_reponse["text"] = "il manque quelque chose"
                 Creer_commandes.update()
