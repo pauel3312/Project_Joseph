@@ -6,7 +6,6 @@ import os
 import SaveAndLoadCommands as Sl
 from functools import partial
 from time import sleep
-from subprocess import check_output
 
 NInputFields = 1
 list_InputWidgets = []
